@@ -16,6 +16,7 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../components/CustomIcons';
+import axios from 'axios';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -74,7 +75,8 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const validateInputs = () => {
     const email = document.getElementById('email') as HTMLInputElement;
     const password = document.getElementById('password') as HTMLInputElement;
-    const name = document.getElementById('name') as HTMLInputElement;
+    const f_name = document.getElementById('first_name') as HTMLInputElement;
+    const l_name = document.getElementById('last_name') as HTMLInputElement;
 
     let isValid = true;
 
@@ -96,7 +98,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       setPasswordErrorMessage('');
     }
 
-    if (!name.value || name.value.length < 1) {
+    if (!f_name.value || f_name.value.length < 1) {
       setNameError(true);
       setNameErrorMessage('Name is required.');
       isValid = false;
@@ -108,18 +110,41 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
     return isValid;
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (nameError || emailError || passwordError) {
-      event.preventDefault();
       return;
     }
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
+    const formData = {
+      first_name: data.get('first_name'),
+      last_name:data.get('last_name'),
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+
+    try {
+      // Send the POST request to the backend API
+      const response = await axios.post('http://localhost:8000/api/register/', formData);
+
+      // Handle the response
+      if (response.status === 201) {
+        alert('Registration successful!');
+        // Optionally, redirect the user to another page (e.g., login page)
+        window.location.href = '/';  // Redirect to the login page
+      }
+    } catch (error) {
+      console.error('Error during registration:', error);
+      // Handle error (e.g., show error messages)
+      if (error.response) {
+        // Server error (e.g., validation errors)
+        alert('Error: ' + error.response.data.detail);
+      } else {
+        alert('Something went wrong! Please try again.');
+      }
+    }
   };
 
   return (
@@ -142,14 +167,28 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="name">Full name</FormLabel>
+              <FormLabel htmlFor="name">First name</FormLabel>
               <TextField
-                autoComplete="name"
-                name="name"
+                autoComplete="first name"
+                name="first_name"
                 required
                 fullWidth
-                id="name"
-                placeholder="Jon Snow"
+                id="first_name"
+                placeholder="Jon"
+                error={nameError}
+                helperText={nameErrorMessage}
+                color={nameError ? 'error' : 'primary'}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="name">Last name</FormLabel>
+              <TextField
+                autoComplete="last name"
+                name="last_name"
+                required
+                fullWidth
+                id="last_name"
+                placeholder="Snow"
                 error={nameError}
                 helperText={nameErrorMessage}
                 color={nameError ? 'error' : 'primary'}

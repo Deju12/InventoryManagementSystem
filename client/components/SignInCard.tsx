@@ -16,6 +16,7 @@ import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 import router from 'next/router';
+import axios from 'axios';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -50,17 +51,45 @@ export default function SignInCard() {
     setOpen(false);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (emailError || passwordError) {
-      event.preventDefault();
       return;
     }
+
     const data = new FormData(event.currentTarget);
-    console.log({
+    const formData = {
       email: data.get('email'),
       password: data.get('password'),
-    });
-    router.push('/dashboard');
+    };
+
+    try {
+      // Send the POST request to the backend API
+      const response = await axios.post('http://localhost:8000/api/gettoken/', formData, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      // Handle the response
+      if (response.status === 200) {
+        const { access, refresh } = response.data;
+
+        // Store tokens securely (consider HttpOnly cookies for production)
+        localStorage.setItem('accessToken', access);
+        localStorage.setItem('refreshToken', refresh);
+        alert('Login successful!');
+        // Redirect to the dashboard or home page
+        window.location.href = '/Dashboard'; // Redirect to the dashboard
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      // Handle error (e.g., show error messages)
+      if (error.response) {
+        alert('Error: ' + error.response.data.detail);
+      } else {
+        alert('Something went wrong! Please try again.');
+      }
+    }
   };
 
   const validateInputs = () => {

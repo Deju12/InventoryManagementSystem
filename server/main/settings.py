@@ -149,3 +149,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL= 'inventory.User'
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Session settings
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookies
+SESSION_COOKIE_SECURE = True   # Use HTTPS in production
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Store sessions in the database

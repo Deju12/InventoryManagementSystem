@@ -77,7 +77,6 @@ export default function SignInCard() {
         // Store tokens securely (consider HttpOnly cookies for production)
         localStorage.setItem('accessToken', access);
         localStorage.setItem('refreshToken', refresh);
-        alert('Login successful!');
         // Redirect to the dashboard or home page
         window.location.href = '/Dashboard'; // Redirect to the dashboard
       }

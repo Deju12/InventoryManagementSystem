@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import { useSelectedItem } from './SelectedItemContext';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -15,9 +16,9 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon /> },
-  { text: 'Analytics', icon: <AnalyticsRoundedIcon /> },
-  { text: 'Clients', icon: <PeopleRoundedIcon /> },
-  { text: 'Tasks', icon: <AssignmentRoundedIcon /> },
+  { text: 'Users', icon: <PeopleRoundedIcon /> },
+  { text: 'Products', icon: <AnalyticsRoundedIcon /> },
+  { text: 'Suppliers', icon: <AssignmentRoundedIcon /> },
 ];
 
 const secondaryListItems = [
@@ -27,12 +28,21 @@ const secondaryListItems = [
 ];
 
 export default function MenuContent() {
+  const { selectedItem, setSelectedItem } = useSelectedItem(); // Use the shared state
+
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item); // Update the shared state
+  };
+
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton selected={index === 0}>
+            <ListItemButton
+              selected={selectedItem === item.text}
+              onClick={() => handleItemClick(item.text)}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -42,7 +52,10 @@ export default function MenuContent() {
       <List dense>
         {secondaryListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton>
+            <ListItemButton
+              selected={selectedItem === item.text}
+              onClick={() => handleItemClick(item.text)}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>

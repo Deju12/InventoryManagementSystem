@@ -1,3 +1,4 @@
+'use client';
 import * as React from 'react';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
 import type {} from '@mui/x-charts/themeAugmentation';
@@ -18,6 +19,11 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from '../theme/customizations';
+import Users from './Users';
+import { useSelectedItem } from '../components/SelectedItemContext';
+import Supplys from './Supplys';
+import Products from './Products';
+
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -26,38 +32,44 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-export default function Dashboard(props: { disableCustomTheme?: boolean }) {
+export default function Dashboard(props: { disableCustomTheme?: boolean }) {  
+  const { selectedItem } = useSelectedItem(); // Access the selected item from the context
   return (
-    <AppTheme {...props} themeComponents={xThemeComponents}>
-      <CssBaseline enableColorScheme />
-      <Box sx={{ display: 'flex' }}>
-        <SideMenu />
-        <AppNavbar />
-        {/* Main content */}
-        <Box
-          component="main"
-          sx={(theme) => ({
-            flexGrow: 1,
-            backgroundColor: theme.vars
-              ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-              : alpha(theme.palette.background.default, 1),
-            overflow: 'auto',
-          })}
-        >
-          <Stack
-            spacing={2}
-            sx={{
+
+      <AppTheme {...props} themeComponents={xThemeComponents}>
+        <CssBaseline enableColorScheme />
+        <Box sx={{ display: 'flex' }}>
+          <SideMenu/>
+          <AppNavbar />
+          {/* Main content */}
+          <Box
+            component="main"
+            sx={(theme) => ({
+              flexGrow: 1,
+              backgroundColor: theme.vars
+                ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+                : alpha(theme.palette.background.default, 1),
+              overflow: 'auto',
+            })}
+          >
+            <Stack
+              spacing={2}
+              sx={{
               alignItems: 'center',
               mx: 3,
               pb: 5,
               mt: { xs: 8, md: 0 },
-            }}
-          >
-            <Header />
-            <MainGrid />
-          </Stack>
+              }}
+            >
+              <Header />
+              {selectedItem === 'Users' && <Users />}
+              {selectedItem === 'Suppliers' && <Supplys />}
+              {selectedItem === 'Products' && <Products />}
+              {selectedItem !== 'Users' && selectedItem !== 'Suppliers' && selectedItem !== 'Products' && <MainGrid />}
+            </Stack>
+          </Box>
         </Box>
-      </Box>
-    </AppTheme>
+      </AppTheme>
+  
   );
 }

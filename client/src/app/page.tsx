@@ -3,6 +3,6 @@ import SignInSide from "../../pages/SignInSide";
 
 export default function Home() {
   return (
-    <SignInSide/>
+    <SignInSide />
   );
 }

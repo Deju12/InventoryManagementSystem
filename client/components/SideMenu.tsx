@@ -10,6 +10,7 @@ import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
+import { useSelectedItem } from './SelectedItemContext';
 
 const drawerWidth = 240;
 
@@ -23,9 +24,10 @@ const Drawer = styled(MuiDrawer)({
     boxSizing: 'border-box',
   },
 });
-
 export default function SideMenu() {
+  const { selectedItem } = useSelectedItem();
   return (
+    
     <Drawer
       variant="permanent"
       sx={{
@@ -35,27 +37,6 @@ export default function SideMenu() {
         },
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          mt: 'calc(var(--template-frame-height, 0px) + 4px)',
-          p: 1.5,
-        }}
-      >
-        <SelectContent />
-      </Box>
-      <Divider />
-      <Box
-        sx={{
-          overflow: 'auto',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <MenuContent />
-        <CardAlert />
-      </Box>
       <Stack
         direction="row"
         sx={{
@@ -82,6 +63,29 @@ export default function SideMenu() {
         </Box>
         <OptionsMenu />
       </Stack>
+      <Box
+        sx={{
+          display: 'flex',
+          mt: 'calc(var(--template-frame-height, 0px) + 4px)',
+          p: 1.5,
+        }}
+      >
+       {/* <SelectContent />*/}
+      </Box>
+      <Divider />
+      <Box
+        sx={{
+          overflow: 'auto',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        
+        <MenuContent/>
+       {/* <CardAlert /> */}
+      </Box>
+      
     </Drawer>
   );
 }
